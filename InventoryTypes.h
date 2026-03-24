@@ -363,12 +363,12 @@ struct InventorySortSpec {
     ESortDirection secondaryDir = ESortDirection::Desc; // 升降序
 };
 
-// 背包布局
+// 页面的布局状态
 struct InventoryLayoutState {
-    EInventoryPage page = EInventoryPage::Consumables; // 哪个页面
-    std::vector<EntryKey> visualOrder;                 // 物品表现出来的布局
-    std::vector<EntryKey> manualSnapshot;              // 玩家拖动后保存的快照
-    bool hasCustomLayout = false;                      // 是否使用自定义布局
+    EInventoryPage page = EInventoryPage::Consumables; // 属于哪一个页面
+    std::vector<EntryKey> visualOrder;                 // 格子的视觉布局
+    std::vector<EntryKey> manualSnapshot;              // 玩家自定义布局的快照
+    bool hasCustomLayout = false;                      // 是否存在自定义布局
 };
 
 // 快捷栏单个槽位
