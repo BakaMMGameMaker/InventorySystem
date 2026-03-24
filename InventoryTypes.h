@@ -171,10 +171,10 @@ enum class ERewardEntryType {
 enum class EInventoryPage {
     Consumables, // 消耗品页
     Materials,   // 材料页
-    QuestItems,  // 任务物品
-    Weapons,     // 武器
-    Artifacts,   // 圣遗物
-    GiftPacks    // 礼包
+    QuestItems,  // 任务物品页
+    Weapons,     // 武器页
+    Artifacts,   // 圣遗物页
+    GiftPacks    // 礼包页
 };
 
 // 物品配置
@@ -307,16 +307,16 @@ struct EntryKeyHash {
     }
 };
 
-// 条目展示出来的信息
+// 一个格子所展示出来的信息
 struct InventoryEntryView {
-    EntryKey key; // 条目基础信息
+    EntryKey key; // 格子的基础元数据，包括其 id 和存放的物体的可堆叠性
 
-    int itemId = 0;          // 物品 id
-    std::string displayName; // 展示名
+    int itemId = 0;          // 格子存放的物品的 id
+    std::string displayName; // 格子的展示名
 
-    EItemMainCategory mainCategory = EItemMainCategory::Consumable; // 主类别
-    EItemSubCategory subCategory = EItemSubCategory::None;          // 子类别
-    ERarity rarity = ERarity::None;                                 // 稀有度
+    EItemMainCategory mainCategory = EItemMainCategory::Consumable; // 格子存放的物品的主类别
+    EItemSubCategory subCategory = EItemSubCategory::None;          // 格子存放的物品的子类别
+    ERarity rarity = ERarity::None;                                 // 格子存放的物品的稀有度
 
     int displayCount = 1; // 展示出来的数量
     int level = 0;        // 展示出来的等级
@@ -330,17 +330,17 @@ struct InventoryEntryView {
 
     std::vector<std::string> filterTags; // 标签
 
-    int sortTypeKey = 0; // 排序键 ?
+    int sortTypeKey = 0; // 排序键，值来源于子类别，即通过子类别对条目进行排序
     std::int64_t sortTimeKey = 0;
 };
 
 // 过滤器
 struct InventoryFilter {
-    std::optional<EItemMainCategory> mainCategory; // 主类别过滤
-    std::optional<EItemSubCategory> subCategory;   // 子类别过滤
+    std::optional<EItemMainCategory> mainCategory; // 根据主类别过滤
+    std::optional<EItemSubCategory> subCategory;   // 根据子类别过滤
 
-    std::unordered_set<ERarity> rarities;               // 稀有度
-    std::unordered_set<EItemSubCategory> subCategories; // 子类别
+    std::unordered_set<ERarity> rarities;               // 允许出现的稀有度
+    std::unordered_set<EItemSubCategory> subCategories; // 允许出现的子类别
 
     std::optional<int> minLevel; // 最小等级
     std::optional<int> maxLevel; // 最大等级
