@@ -193,7 +193,7 @@ struct ItemConfig {
     bool canDrag = true;         // 可拖拽
     bool canSort = true;         // 可排序
     bool canQuickbar = false;    // 可进入快捷栏
-    bool showInInventory = true; // 背包中显示
+    bool showInInventory = true; // 是否在背包中显示
 
     EInventoryBucket bucket = EInventoryBucket::None; // 属于哪个背包桶 (圣遗物/武器/...)
 
@@ -288,10 +288,10 @@ struct InventoryCapacityState {
     std::unordered_map<EInventoryBucket, BucketCapacityState> buckets;
 };
 
-// 一个条目 (格子) 的信息
+// 一个条目 (格子) 的元数据
 struct EntryKey {
-    EEntryType entryType = EEntryType::StackEntry; // 可堆叠还是实例
-    std::int64_t id = 0;                           // id
+    EEntryType entryType = EEntryType::StackEntry; // 存放可堆叠物品还是存放实例
+    std::int64_t id = 0;                           // 格子的 id
 
     // 是否同一条目
     bool operator==(const EntryKey &rhs) const { return entryType == rhs.entryType && id == rhs.id; }
