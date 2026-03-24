@@ -200,12 +200,12 @@ struct ItemConfig {
     std::vector<std::string> tags; // 标签
 };
 
-// 随机奖励
+// 随机奖励池子中的每一个候选
 struct RandomRewardCandidate {
-    int itemId = 0;   // 物品 id
-    int minCount = 1; // 最小获得数量
-    int maxCount = 1; // 最大获得数量
-    int weight = 0;   // 权重
+    int itemId = 0;   // 奖励的物品 id
+    int minCount = 1; // 奖励的最小获得数量
+    int maxCount = 1; // 奖励的最大获得数量
+    int weight = 0;   // 奖励在池子中的权重
 };
 
 // 奖励条目
@@ -216,8 +216,8 @@ struct RewardEntryConfig {
     int minCount = 1; // 最小获得数量
     int maxCount = 1; // 最大获得数量
 
-    ECurrencyType currencyType = ECurrencyType::Mora; // 货币类别
-    std::int64_t currencyAmount = 0;                  // 货币数量
+    ECurrencyType currencyType = ECurrencyType::Mora; // 奖励的货币类别
+    std::int64_t currencyAmount = 0;                  // 奖励的货币数量
 
     std::vector<RandomRewardCandidate> candidates; // 候选物品
     int randomPickCount = 0;                       // 随机发放的物品的数量
@@ -225,8 +225,8 @@ struct RewardEntryConfig {
 
 // 礼包配置
 struct GiftPackConfig {
-    int itemId = 0;                         // 物品 id
-    std::vector<RewardEntryConfig> rewards; // 奖励内容
+    int itemId = 0;                         // 礼包的物品 id
+    std::vector<RewardEntryConfig> rewards; // 礼包的奖励内容
 };
 
 // 货币存储，有多少摩拉和原石
@@ -398,6 +398,6 @@ struct ResolvedItemReward {
 
 // 解算后的奖励结果
 struct ResolvedRewardResult {
-    std::vector<ResolvedCurrencyReward> currencies; // 货币奖励
-    std::vector<ResolvedItemReward> items;          // 物品奖励
+    std::vector<ResolvedCurrencyReward> currencies; // 整个礼包的所有货币奖励
+    std::vector<ResolvedItemReward> items;          // 整个礼包的所有物品奖励
 };
