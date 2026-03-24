@@ -134,7 +134,8 @@ EItemUseResult InventoryCommandService::OpenGiftPack(const EntryKey &key) {
 
     const ResolvedRewardResult resolved = m_rewardSvc.ResolveGiftPackRewards(entry->itemId);
 
-    ApplyResolvedRewards(resolved);
+    // 先校验礼包本体能否扣除，再校验奖励是否都能落地，再统一提交
+    if (!TryApplyResolvedRewards(resolved)) { return EItemUseResult::Failed; }
 
     if (!ConsumeStackEntry(entry->stackId, 1)) { return EItemUseResult::Failed; }
 
@@ -143,8 +144,12 @@ EItemUseResult InventoryCommandService::OpenGiftPack(const EntryKey &key) {
 }
 
 EAcquireResult InventoryCommandService::AcquireCurrencyItem(int itemId, int count) {
-    const ECurrencyType currencyType = ResolveCurrencyTypeByItemId(itemId);
-    m_walletSvc.AddCurrency(currencyType, static_cast<std::int64_t>(count));
+    if (count <= 0) { return EAcquireResult::Failed; }
+
+    const std::optional<ECurrencyType> currencyType = TryResolveCurrencyType(itemId);
+    if (!currencyType.has_value()) { return EAcquireResult::InvalidConfig; }
+
+    m_walletSvc.AddCurrency(*currencyType, static_cast<std::int64_t>(count));
     return EAcquireResult::Success;
 }
 
@@ -261,36 +266,55 @@ bool InventoryCommandService::ConsumeStackEntry(StackId stackId, int count) {
 
 bool InventoryCommandService::ConsumeInstance(InstanceId instanceId) { return m_repo.RemoveInstance(instanceId); }
 
-void InventoryCommandService::ApplyResolvedRewards(const ResolvedRewardResult &rewards) {
+bool InventoryCommandService::TryApplyResolvedRewards(const ResolvedRewardResult &rewards) {
+    // 1. 先验证所有 item reward 是否配置合法
+    // 2. 再逐条判断是否“理论上允许获得”
+    // 3. 全部通过后，再正式 apply
+
+    for (const ResolvedItemReward &itemReward : rewards.items) {
+        if (itemReward.itemId <= 0 || itemReward.count <= 0) { return false; }
+
+        const ItemConfig *cfg = m_configSvc.GetItemConfig(itemReward.itemId);
+        if (cfg == nullptr) { return false; }
+
+        if (cfg->mainCategory == EItemMainCategory::Currency) {
+            if (!TryResolveCurrencyType(itemReward.itemId).has_value()) { return false; }
+            continue;
+        }
+
+        if (!m_capacitySvc.CanAcquireWithPolicy(itemReward.itemId, itemReward.count, EOverflowPolicy::AllowOverflow)) {
+            return false;
+        }
+    }
+
     for (const ResolvedCurrencyReward &currencyReward : rewards.currencies) {
         if (currencyReward.amount > 0) { m_walletSvc.AddCurrency(currencyReward.currencyType, currencyReward.amount); }
     }
 
     for (const ResolvedItemReward &itemReward : rewards.items) {
-        if (itemReward.itemId <= 0 || itemReward.count <= 0) { continue; }
-
         const ItemConfig *cfg = m_configSvc.GetItemConfig(itemReward.itemId);
-        if (cfg == nullptr) { continue; }
+        if (cfg == nullptr) { return false; }
 
         if (cfg->mainCategory == EItemMainCategory::Currency) {
-            AcquireCurrencyItem(itemReward.itemId, itemReward.count);
+            const std::optional<ECurrencyType> currencyType = TryResolveCurrencyType(itemReward.itemId);
+            if (!currencyType.has_value()) { return false; }
+            m_walletSvc.AddCurrency(*currencyType, itemReward.count);
         } else {
-            AcquireItem(itemReward.itemId, itemReward.count, EAcquireReason::GiftPackOpen,
-                        EOverflowPolicy::AllowOverflow); // 开启礼包允许溢出
+            const EAcquireResult result = AcquireItem(itemReward.itemId, itemReward.count, EAcquireReason::GiftPackOpen,
+                                                      EOverflowPolicy::AllowOverflow);
+
+            if (result != EAcquireResult::Success) { return false; }
         }
     }
+
+    return true;
 }
 
-ECurrencyType InventoryCommandService::ResolveCurrencyTypeByItemId(int itemId) const {
-    // 当前按样例配置约定：
-    // 1 -> Mora
-    // 2 -> Primogem
-    switch (itemId) {
-    case 1:
-        return ECurrencyType::Mora;
-    case 2:
-        return ECurrencyType::Primogem;
-    default:
-        return ECurrencyType::Mora;
-    }
+std::optional<ECurrencyType> InventoryCommandService::TryResolveCurrencyType(int itemId) const {
+    const ItemConfig *cfg = m_configSvc.GetItemConfig(itemId);
+    if (cfg == nullptr) { return std::nullopt; }
+
+    if (cfg->mainCategory != EItemMainCategory::Currency || !cfg->currencyType.has_value()) { return std::nullopt; }
+
+    return cfg->currencyType;
 }

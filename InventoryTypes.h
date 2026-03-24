@@ -196,6 +196,7 @@ struct ItemConfig {
     bool showInInventory = true; // 是否在背包中显示
 
     EInventoryBucket bucket = EInventoryBucket::None; // 属于哪个背包桶 (圣遗物/武器/...)
+    std::optional<ECurrencyType> currencyType;        // 如果物品为货币，其货币种类
 
     std::vector<std::string> tags; // 标签
 };

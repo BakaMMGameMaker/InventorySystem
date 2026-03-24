@@ -46,10 +46,10 @@ private:
     bool ConsumeInstance(InstanceId instanceId);
 
     // 给予玩家已解算好的奖励
-    void ApplyResolvedRewards(const ResolvedRewardResult &rewards);
+    bool TryApplyResolvedRewards(const ResolvedRewardResult &rewards);
 
     // 根据 id 返回货币类型
-    ECurrencyType ResolveCurrencyTypeByItemId(int itemId) const;
+    std::optional<ECurrencyType> TryResolveCurrencyType(int itemId) const;
 
 private:
     ItemConfigService &m_configSvc;
