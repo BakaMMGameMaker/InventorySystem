@@ -21,7 +21,7 @@ public:
     // 指定 id 的存放可堆叠物品的格子
     const StackEntry *FindStackById(StackId stackId) const;
 
-    // 新增一个条目 (格子)
+    // 添加给定的存放可堆叠物品的格子
     void AddStackEntry(const StackEntry &entry);
     // 删除指定 id 的格子
     bool RemoveStackEntry(StackId stackId);

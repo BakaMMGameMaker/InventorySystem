@@ -186,7 +186,7 @@ struct ItemConfig {
     ERarity rarity = ERarity::None;                                 // 物品稀有度
 
     bool stackable = false; // 可堆叠
-    int maxStack = 1;       // 堆数量上限
+    int maxStack = 1;       // Stack 中可存放的物体的数量上限
 
     bool canUse = false;         // 可使用
     bool canDelete = true;       // 可删除

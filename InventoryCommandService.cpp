@@ -155,7 +155,7 @@ EAcquireResult InventoryCommandService::AcquireStackableItemInternal(int itemId,
     const ItemConfig *cfg = m_configSvc.GetItemConfig(itemId);
     if (cfg == nullptr) { return EAcquireResult::InvalidConfig; }
 
-    int remain = count;
+    int remain = count; // 待消费的总数
 
     // 1. 优先填 normal stacks
     std::vector<StackEntry> *entries = m_repo.FindStackEntries(itemId);
@@ -163,9 +163,9 @@ EAcquireResult InventoryCommandService::AcquireStackableItemInternal(int itemId,
         for (StackEntry &entry : *entries) {
             if (remain <= 0) { break; }
 
-            if (entry.isOverflow) { continue; }
+            if (entry.isOverflow) { continue; } // 如果是溢出 Stack，跳过
 
-            const int canAdd = std::max(0, cfg->maxStack - entry.count);
+            const int canAdd = std::max(0, cfg->maxStack - entry.count); // 当前 Stack 还能消费多少
             if (canAdd <= 0) { continue; }
 
             const int addNum = std::min(canAdd, remain);
@@ -198,7 +198,7 @@ EAcquireResult InventoryCommandService::AcquireStackableItemInternal(int itemId,
 
     // 3. overflow 路径：允许把剩余内容拆成 overflow stacks
     while (remain > 0) {
-        const int chunk = std::min(cfg->maxStack, remain);
+        const int chunk = std::min(cfg->maxStack, remain); // 注意 Remain 量比一个 Stack 能放的还多的情况
 
         StackEntry overflowEntry;
         overflowEntry.stackId = m_repo.GenerateNextStackId();
