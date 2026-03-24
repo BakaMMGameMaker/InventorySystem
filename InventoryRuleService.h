@@ -4,18 +4,19 @@
 #include "InventoryRepository.h"
 #include "ItemConfigService.h"
 
+// 规则系统，用于判定操作的合法性
 class InventoryRuleService {
 public:
     InventoryRuleService(const ItemConfigService &configSvc, InventoryRepository &repo,
                          InventoryCapacityService &capacitySvc);
 
-    // 是否可以删除指定 key 的物品
+    // 是否可以删除指定 key 的格子中存放的物品
     bool CanDeleteItem(const EntryKey &key) const;
-    // 是否可以使用指定 key 的物品
+    // 是否可以使用指定 key 的格子中存放的物品
     bool CanUseItem(const EntryKey &key) const;
-    // 是否可以把指定 key 的物品绑定到快捷栏
+    // 是否可以把指定 key 的格子中存放的物品绑定到快捷栏
     bool CanBindToQuickbar(int itemId) const;
-    // 是否可以拖拽指定 key 的物品
+    // 是否可以拖拽指定 key 的条目
     bool CanDragItem(const EntryKey &key) const;
 
     // 指定 id 的任务道具是否被保护

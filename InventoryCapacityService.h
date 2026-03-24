@@ -19,15 +19,15 @@ public:
 
     // 指定 id 的物品在不允许溢出的条件下是否还能增加 count 个
     bool CanAcquireNormally(int itemId, int count) const;
-    // 指定 id 的物品在允许溢出的条件下是否还能增加 count 个
+    // 指定 id 的物品在给定溢出策略下是否还能增加 count 个
     bool CanAcquireWithPolicy(int itemId, int count, EOverflowPolicy policy) const;
 
     // 指定 id 的物品新增 count 个后是否需要新的格子
     bool WillRequireNewNormalEntry(int itemId, int count) const;
-    // 指定 id 的物品新增 count 个是否会到达堆叠上限
+    // 指定 id 的物品新增 count 个是否会到达上限
     bool WillReachItemLimit(int itemId, int count) const;
 
-    // 尝试将溢出状态的 Stack 或者 Instance 按顺序转回 Normal 状态 （不会把溢出物品合并/压缩到未满 Stack 中）
+    // 根据空闲槽位数量将溢出状态的 Stack 或者 Instance 按顺序转回 Normal 状态 （不会把溢出物品合并到未满 Stack 中）
     void NormalizeOverflow();
 
 private:

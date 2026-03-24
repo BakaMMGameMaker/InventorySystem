@@ -2,7 +2,7 @@
 
 #include "InventoryTypes.h"
 
-// 背包
+// 玩家的整个背包
 class InventoryRepository {
 public:
     InventoryRepository() = default;
@@ -16,9 +16,9 @@ public:
     // 存放指定 id 物品的所有格子
     const std::vector<StackEntry> *FindStackEntries(int itemId) const;
 
-    // 存放可堆叠物品的指定 id 的格子
+    // 指定 id 的存放可堆叠物品的格子
     StackEntry *FindStackById(StackId stackId);
-    // 存放可堆叠物品的指定 id 的格子
+    // 指定 id 的存放可堆叠物品的格子
     const StackEntry *FindStackById(StackId stackId) const;
 
     // 新增一个条目 (格子)
@@ -50,7 +50,7 @@ public:
 
     // 生成下一个存放可堆叠物品的格子的 id
     StackId GenerateNextStackId();
-    // 生成下一个实例的 id，同时也可作为存放此实例的格子的 id
+    // 生成下一个实例的 id，也可视作存放此实例的格子的 id
     InstanceId GenerateNextInstanceId();
 
 private:

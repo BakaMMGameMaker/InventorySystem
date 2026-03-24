@@ -87,13 +87,13 @@ enum class EInventoryBucket {
     GiftPackBucket    // 礼包
 };
 
-// 条目类型
+// 格子中存放的物品的可堆叠性
 enum class EEntryType {
     StackEntry,   // 可堆叠物品
     InstanceEntry // 不可堆叠，即便同名也要单独管理
 };
 
-// 获取原因
+// 获取物品的原因
 enum class EAcquireReason {
     Pickup,       // 大世界拾取
     Reward,       // 任务奖励
@@ -236,15 +236,15 @@ struct CurrencyWallet {
 
 // 存放可堆叠物品的一个格子
 struct StackEntry {
-    StackId stackId = 0; // 堆 id
-    int itemId = 0;      // 当前堆存放的物品的 id
-    int count = 0;       // 当前堆的物品数量
+    StackId stackId = 0; // 格子的 id
+    int itemId = 0;      // 当前格子中存放的物品的 id
+    int count = 0;       // 当前格子中存放的物品数量
 
-    bool isOverflow = false; // 当前堆是否溢出
-    bool isNew = false;      // 是否新堆 (红点)
+    bool isOverflow = false; // 当前格子是否为溢出状态
+    bool isNew = false;      // 当前格子是否为新格子 (红点)
 
-    TimeStamp createTime = 0;     // 获取时间 / 堆创建时间
-    TimeStamp lastUpdateTime = 0; // 上次更新时间
+    TimeStamp createTime = 0;     // 获取时间 / 格子创建时间
+    TimeStamp lastUpdateTime = 0; // 格子上次更新的时间
 };
 
 // 实例对象
@@ -386,14 +386,14 @@ struct QuickbarState {
 
 // 解算后的货币奖励
 struct ResolvedCurrencyReward {
-    ECurrencyType currencyType = ECurrencyType::Mora; // 货币类别
-    std::int64_t amount = 0;                          // 奖励数量
+    ECurrencyType currencyType = ECurrencyType::Mora; // 奖励的货币类别
+    std::int64_t amount = 0;                          // 奖励的货币数量
 };
 
 // 解算后的物品奖励
 struct ResolvedItemReward {
-    int itemId = 0; // 物品 id
-    int count = 0;  // 物品数量
+    int itemId = 0; // 奖励的物品 id
+    int count = 0;  // 奖励的物品数量
 };
 
 // 解算后的奖励结果
