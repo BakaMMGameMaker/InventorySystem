@@ -382,7 +382,7 @@ struct QuickbarSlot {
 // 快捷栏状态
 struct QuickbarState {
     static constexpr int kMaxSlots = 5;          // 最大快捷栏数量
-    std::array<QuickbarSlot, kMaxSlots> slots{}; // 五个槽位
+    std::array<QuickbarSlot, kMaxSlots> slots{}; // 所有的槽位
 };
 
 // 解算后的货币奖励
