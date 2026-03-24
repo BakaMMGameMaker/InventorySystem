@@ -7,11 +7,15 @@ class WalletService {
 public:
     WalletService();
 
-    std::int64_t GetBalance(ECurrencyType type) const;          // 获取给定类型货币的数量
-    void AddCurrency(ECurrencyType type, std::int64_t amount);  // 增加给定类型货币指定的数量
-    bool CostCurrency(ECurrencyType type, std::int64_t amount); // 扣除给定类型货币指定的数量
+    // 指定类型货币的数量
+    std::int64_t GetBalance(ECurrencyType type) const;
+    // 增加指定类型货币指定的数量
+    void AddCurrency(ECurrencyType type, std::int64_t amount);
+    // 扣除指定类型货币指定的数量
+    bool CostCurrency(ECurrencyType type, std::int64_t amount);
 
-    const CurrencyWallet &GetWallet() const; // 货币仓库
+    // 获取货币仓库
+    const CurrencyWallet &GetWallet() const;
 
 private:
     CurrencyWallet m_wallet;

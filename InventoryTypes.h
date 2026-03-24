@@ -234,20 +234,20 @@ struct CurrencyWallet {
     std::unordered_map<ECurrencyType, std::int64_t> balances;
 };
 
-// 堆
+// 存放可堆叠物品的一个格子
 struct StackEntry {
     StackId stackId = 0; // 堆 id
-    int itemId = 0;      // 物品 id
-    int count = 0;       // 物品数量
+    int itemId = 0;      // 当前堆存放的物品的 id
+    int count = 0;       // 当前堆的物品数量
 
-    bool isOverflow = false; // 是否溢出
+    bool isOverflow = false; // 当前堆是否溢出
     bool isNew = false;      // 是否新堆 (红点)
 
     TimeStamp createTime = 0;     // 获取时间 / 堆创建时间
     TimeStamp lastUpdateTime = 0; // 上次更新时间
 };
 
-// 物品实例 (不可堆叠物品)
+// 实例对象
 struct ItemInstance {
     InstanceId instanceId = 0; // 实例 id
     int itemId = 0;            // 物品 id
@@ -266,24 +266,24 @@ struct ItemInstance {
     TimeStamp createTime = 0; // 获取时间
 };
 
-// 桶 (页) 的状态
+// 单桶 (单页) 的状态
 struct BucketCapacityState {
     EInventoryBucket bucket = EInventoryBucket::None;
-    int baseCapacity = 0;      // 基础容量
-    int normalUsedCount = 0;   // 正常存放的数量
-    int overflowUsedCount = 0; // 溢出的数量
+    int baseCapacity = 0;      // 基础条目容量
+    int normalUsedCount = 0;   // 非溢出的条目数量
+    int overflowUsedCount = 0; // 溢出的条目数量
 
-    // 正常 + 溢出的物品数量
+    // 当前桶正常 + 溢出的条目数量
     int TotalUsedCount() const { return normalUsedCount + overflowUsedCount; }
 
-    // 是否还有空闲槽位
+    // 当前桶中是否还有空闲的 Normal 格子
     bool HasNormalFreeSlot() const { return normalUsedCount < baseCapacity; }
 
-    // 空闲槽位的数量
+    // 当前桶中还能容纳多少个 Normal 格子
     int NormalFreeSlotCount() const { return std::max(0, baseCapacity - normalUsedCount); }
 };
 
-// 整个背包的状态
+// 背包每个桶 (每一页) 的状态
 struct InventoryCapacityState {
     std::unordered_map<EInventoryBucket, BucketCapacityState> buckets;
 };

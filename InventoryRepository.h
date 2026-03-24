@@ -8,30 +8,50 @@ public:
     InventoryRepository() = default;
 
     // -------- 可堆叠物品 --------
-    const std::unordered_map<int, std::vector<StackEntry>> &GetAllStackEntries() const; // 获取所有可堆叠物品条目
-    std::vector<StackEntry> *FindStackEntries(int itemId);                              // 所有物品 id 匹配的物品条目
-    const std::vector<StackEntry> *FindStackEntries(int itemId) const;                  // 所有物品 id 匹配的物品条目
 
-    StackEntry *FindStackById(StackId stackId);             // 根据条目 id 返回特定条目
-    const StackEntry *FindStackById(StackId stackId) const; // 根据条目 id 返回特定条目
+    // 获取 物品 id => 存放该物品的所有格子 的映射
+    const std::unordered_map<int, std::vector<StackEntry>> &GetAllStackEntries() const;
+    // 存放指定 id 物品的所有格子
+    std::vector<StackEntry> *FindStackEntries(int itemId);
+    // 存放指定 id 物品的所有格子
+    const std::vector<StackEntry> *FindStackEntries(int itemId) const;
 
-    void AddStackEntry(const StackEntry &entry);             // 新增堆条目
-    bool RemoveStackEntry(StackId stackId);                  // 删除堆条目
-    bool UpdateStackCount(StackId stackId, int newCount);    // 更新物品数量
-    bool SetStackOverflow(StackId stackId, bool isOverflow); // 设置溢出状态
+    // 存放可堆叠物品的指定 id 的格子
+    StackEntry *FindStackById(StackId stackId);
+    // 存放可堆叠物品的指定 id 的格子
+    const StackEntry *FindStackById(StackId stackId) const;
+
+    // 新增一个条目 (格子)
+    void AddStackEntry(const StackEntry &entry);
+    // 删除指定 id 的格子
+    bool RemoveStackEntry(StackId stackId);
+    // 更新指定 id 的格子内的可堆叠物品的数量
+    bool UpdateStackCount(StackId stackId, int newCount);
+    // 设置指定 id 的格子的溢出状态
+    bool SetStackOverflow(StackId stackId, bool isOverflow);
 
     // -------- 物品实例 --------
-    const std::unordered_map<InstanceId, ItemInstance> &GetAllInstances() const; // 获取所有物品实例
-    ItemInstance *FindInstance(InstanceId instanceId);                           // 根据实例 id 返回物品实例
-    const ItemInstance *FindInstance(InstanceId instanceId) const;               // 根据实例 id 返回物品实例
 
-    void AddInstance(const ItemInstance &instance);                   // 新增物品实例
-    bool RemoveInstance(InstanceId instanceId);                       // 删除物品实例
-    bool SetInstanceOverflow(InstanceId instanceId, bool isOverflow); // 设置物品实例溢出状态
+    // 获取 实例 id => 实例对象 的映射
+    const std::unordered_map<InstanceId, ItemInstance> &GetAllInstances() const;
+    // 指定 id 的实例对象
+    ItemInstance *FindInstance(InstanceId instanceId);
+    // 指定 id 的实例对象
+    const ItemInstance *FindInstance(InstanceId instanceId) const;
+
+    // 新增一个实例
+    void AddInstance(const ItemInstance &instance);
+    // 删除指定 id 的实例
+    bool RemoveInstance(InstanceId instanceId);
+    // 设置指定 id 的实例的溢出状态
+    bool SetInstanceOverflow(InstanceId instanceId, bool isOverflow);
 
     // -------- id 生成 --------
-    StackId GenerateNextStackId();       // 生成新堆 id
-    InstanceId GenerateNextInstanceId(); // 生成新物品实例 id
+
+    // 生成下一个存放可堆叠物品的格子的 id
+    StackId GenerateNextStackId();
+    // 生成下一个实例的 id，同时也可作为存放此实例的格子的 id
+    InstanceId GenerateNextInstanceId();
 
 private:
     std::unordered_map<int, std::vector<StackEntry>> m_stackEntriesByItemId; // 物品 id => 所有堆条目
